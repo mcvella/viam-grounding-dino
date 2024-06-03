@@ -1,0 +1,13 @@
+{
+  "module_id": "mcvella:grounding-dino",
+  "visibility": "public",
+  "url": "https://github.com/mcvella/viam-grounding-dino",
+  "description": "A Viam modular computer vision service for Grounding Dino inference",
+  "models": [
+    {
+      "api": "rdk:service:vision",
+      "model": "mcvella:vision:grounding-dino"
+    }
+  ],
+  "entrypoint": "run.sh"
+}

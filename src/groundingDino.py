@@ -95,7 +95,7 @@ class groundingDino(Vision, Reconfigurable):
         # example output: [{'scores': tensor([0.9432, 0.6219]), 'labels': ['person', 'a spatula'], 'boxes': tensor([[ 895.2635,    4.6237, 1570.6479, 1069.6368],
         # [ 871.7524,  799.1982, 1297.0361,  947.1995]])}]
         if len(results) >= 1:
-            LOGGER.error(results)
+            LOGGER.debug(results)
             index = 0
             for label in results[0]['labels']:
                 detection = { "confidence": results[0]['scores'][index].item(), "class_name": label, 

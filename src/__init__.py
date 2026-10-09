@@ -7,4 +7,4 @@ from viam.resource.registry import Registry, ResourceCreatorRegistration
 
 from .groundingDino import groundingDino
 
-Registry.register_resource_creator(Vision.SUBTYPE, groundingDino.MODEL, ResourceCreatorRegistration(groundingDino.new, groundingDino.validate))
+Registry.register_resource_creator(Vision.API, groundingDino.MODEL, ResourceCreatorRegistration(groundingDino.new, groundingDino.validate))

@@ -132,6 +132,15 @@ class groundingDino(Vision, Reconfigurable):
     ) -> List[Classification]:
         return
 
+    async def get_detections_3d(
+        self,
+        camera_name: str,
+        *,
+        extra: Optional[Mapping[str, Any]] = None,
+        timeout: Optional[float] = None,
+    ):
+        return []
+
     async def get_object_point_clouds(
         self, camera_name: str, *, extra: Optional[Mapping[str, Any]] = None, timeout: Optional[float] = None
     ) -> List[PointCloudObject]:
@@ -147,6 +156,7 @@ class groundingDino(Vision, Reconfigurable):
         return_classifications: bool = False,
         return_detections: bool = False,
         return_object_point_clouds: bool = False,
+        return_detections_3d: bool = False,
         *,
         extra: Optional[Mapping[str, Any]] = None,
         timeout: Optional[float] = None,
@@ -164,8 +174,11 @@ class groundingDino(Vision, Reconfigurable):
         extra: Optional[Mapping[str, Any]] = None,
         timeout: Optional[float] = None,
     ) -> GetPropertiesResponse:
-        return GetPropertiesResponse(
+        properties = dict(
             classifications_supported=False,
             detections_supported=True,
-            object_point_clouds_supported=False
-            )
+            object_point_clouds_supported=False,
+        )
+        if "detections_3d_supported" in GetPropertiesResponse.DESCRIPTOR.fields_by_name:
+            properties["detections_3d_supported"] = False
+        return GetPropertiesResponse(**properties)

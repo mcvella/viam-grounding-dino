@@ -101,16 +101,15 @@ class groundingDino(Vision, Reconfigurable):
         results = self.processor.post_process_grounded_object_detection(
             outputs,
             inputs.input_ids,
-            box_threshold=0.4,
+            threshold=0.4,
             text_threshold=0.3,
             target_sizes=[image.size[::-1]]
-)
-        # example output: [{'scores': tensor([0.9432, 0.6219]), 'labels': ['person', 'a spatula'], 'boxes': tensor([[ 895.2635,    4.6237, 1570.6479, 1069.6368],
-        # [ 871.7524,  799.1982, 1297.0361,  947.1995]])}]
+        )
         if len(results) >= 1:
             LOGGER.debug(results)
+            labels = results[0].get("text_labels") or results[0]["labels"]
             index = 0
-            for label in results[0]['labels']:
+            for label in labels:
                 detection = { "confidence": results[0]['scores'][index].item(), "class_name": label, 
                              "x_min": int(results[0]['boxes'][index][0].item()), "y_min": int(results[0]['boxes'][index][1].item()), 
                              "x_max": int(results[0]['boxes'][index][2].item()), "y_max": int(results[0]['boxes'][index][3].item()) }

@@ -168,10 +168,13 @@ class groundingDino(Vision, Reconfigurable):
         timeout: Optional[float] = None,
     ) -> CaptureAllResult:
         result = CaptureAllResult()
+        image = None
+        if return_image or return_detections:
+            image = await self.get_cam_image(camera_name)
         if return_image:
-            result.image = await self.get_cam_image(camera_name)
+            result.image = image
         if return_detections:
-            result.detections = await self.get_detections(result.image, 1)
+            result.detections = await self.get_detections(image, extra=extra)
         return result
 
     async def get_properties(

@@ -16,6 +16,7 @@ from viam.resource.types import Model, ModelFamily
 from viam.services.vision import Vision, CaptureAllResult
 from viam.proto.service.vision import GetPropertiesResponse
 from viam.components.camera import Camera, ViamImage
+from viam.media.video import CameraMimeType
 from viam.media.utils.pil import viam_to_pil_image
 from viam.logging import getLogger
 
@@ -66,8 +67,13 @@ class groundingDino(Vision, Reconfigurable):
     ) -> ViamImage:
         actual_cam = self.DEPS[Camera.get_resource_name(camera_name)]
         cam = cast(Camera, actual_cam)
-        cam_image = await cam.get_image(mime_type="image/jpeg")
-        return cam_image
+        images, _ = await cam.get_images()
+        if not images:
+            raise Exception("get_images returned no images")
+        for img in images:
+            if img.mime_type == CameraMimeType.JPEG:
+                return img
+        return images[0]
     
     async def get_detections_from_camera(
         self, camera_name: str, *, extra: Optional[Mapping[str, Any]] = None, timeout: Optional[float] = None

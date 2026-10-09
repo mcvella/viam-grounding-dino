@@ -42,15 +42,23 @@ class groundingDino(Vision, Reconfigurable):
 
     @classmethod
     def validate(cls, config: ComponentConfig):
-        return
+        camera = config.attributes.fields["camera"].string_value
+        if not camera:
+            raise Exception("camera is required")
+        return [camera], []
 
     def reconfigure(self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]):
         self.DEPS = dependencies
-        model_id = config.attributes.fields["model_id"].string_value or "IDEA-Research/grounding-dino-tiny"
+        fields = config.attributes.fields
+        camera_name = fields["camera"].string_value
+        if Camera.get_resource_name(camera_name) not in dependencies:
+            raise Exception(f"camera dependency '{camera_name}' not found")
+        self.camera_name = camera_name
+        model_id = fields["model_id"].string_value or "IDEA-Research/grounding-dino-tiny"
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.processor = AutoProcessor.from_pretrained(model_id)
         self.model = AutoModelForZeroShotObjectDetection.from_pretrained(model_id).to(self.device)
-        self.default_query = config.attributes.fields["default_query"].string_value or ""
+        self.default_query = fields["default_query"].string_value or ""
         return
     
     async def get_cam_image(

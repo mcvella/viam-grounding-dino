@@ -24,6 +24,7 @@ On the new component panel, copy and paste the following attribute template into
 
 ```json
 {
+  "camera": "<camera-name>",
   "model_id": "IDEA-Research/grounding-dino-tiny",
   "default_query": "house. car. zebra."
 }
@@ -38,6 +39,7 @@ The following attributes are available for `rdk:vision:mcvella:vision:grounding-
 
 | Name | Type | Inclusion | Description |
 | ---- | ---- | --------- | ----------- |
+| `camera` | string | **Required** | Camera resource this service depends on. Returned as an implicit dependency, so it does not need to be listed in `depends_on`. |
 | `model_id` | string | Optional |  The HuggingFace model ID for the grounding DINO model |
 | `default_query` | string | **Required** |  A list of classes to look for in images. Each class must end in a period. Note that multi-word classes will often be detected as the base word, for example "man cooking" might detect "man". |
 
@@ -45,6 +47,7 @@ The following attributes are available for `rdk:vision:mcvella:vision:grounding-
 
 ```json
 {
+  "camera": "cam",
   "default_query": "road. car. stop sign."
 }
 ```
@@ -57,13 +60,7 @@ The grounding-dino resource provides the following methods from Viam's built-in 
 
 ### get_detections_from_camera(camera_name=*string*)
 
-Note: if using this method, any cameras you are using must be set in the `depends_on` array for the service configuration, for example:
-
-```json
-      "depends_on": [
-        "cam"
-      ]
-```
+The camera named in the `camera` attribute is an implicit dependency and is available to this method without a `depends_on` entry.
 
 By default, the grounding-dino model will be use the "default_query".
 If no "default_query" is specified no detections will occur.
